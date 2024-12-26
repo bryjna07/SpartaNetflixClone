@@ -1,0 +1,11 @@
+//
+//  Config.xcconfig
+//  ios5-Movie
+//
+//  Created by t2023-m0033 on 12/19/24.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+APIKey = 1a7f4bd945e56750ef4ce701f48834dc
