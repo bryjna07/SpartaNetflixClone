@@ -186,8 +186,7 @@ extension MainViewController: UICollectionViewDelegate {
                     .subscribe(onSuccess: { [weak self] key in
                         // 만약 유효한 url 을 서버로부터 받았을 경우 이 url 을 그대로 사용했을 것입니다.
     //                     let url = URL(string: "https://www.youtube.com/watch?v=\(key)")!
-                         self?.playVideoUrl()
-//                        self?.navigationController?.pushViewController(YouTubePlayerViewController(key: key), animated: true)
+                        self?.navigationController?.pushViewController(YouTubePlayerViewController(key: key), animated: true)
                     }, onFailure: { error in
                         print("에러 발생: \(error)")
                     }).disposed(by: disposeBag)
@@ -196,8 +195,7 @@ extension MainViewController: UICollectionViewDelegate {
                 viewModel.fetchTrailerKey(movie: topRatedMovies[indexPath.row])
                     .observe(on: MainScheduler.instance)
                     .subscribe(onSuccess: { [weak self] key in
-                        self?.playVideoUrl()
-//                        self?.navigationController?.pushViewController(YouTubePlayerViewController(key: key), animated: true)
+                        self?.navigationController?.pushViewController(YouTubePlayerViewController(key: key), animated: true)
                     }, onFailure: { error in
                         print("에러 발생: \(error)")
                     }).disposed(by: disposeBag)
@@ -206,8 +204,7 @@ extension MainViewController: UICollectionViewDelegate {
                 viewModel.fetchTrailerKey(movie: upcomingMovies[indexPath.row])
                     .observe(on: MainScheduler.instance)
                     .subscribe(onSuccess: { [weak self] key in
-                        self?.playVideoUrl()
-//                        self?.navigationController?.pushViewController(YouTubePlayerViewController(key: key), animated: true)
+                        self?.navigationController?.pushViewController(YouTubePlayerViewController(key: key), animated: true)
                     }, onFailure: { error in
                         print("에러 발생: \(error)")
                     }).disposed(by: disposeBag)

@@ -12,6 +12,7 @@
 		07216D032D1D3D630008004D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 07216D022D1D3D630008004D /* RxCocoa */; };
 		07216D082D1D3D630008004D /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 07216D072D1D3D630008004D /* RxRelay */; };
 		07216D0D2D1D3D630008004D /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 07216D0C2D1D3D630008004D /* RxSwift */; };
+		07216D522D1D4B200008004D /* YouTubeiOSPlayerHelper in Frameworks */ = {isa = PBXBuildFile; productRef = 07216D512D1D4B200008004D /* YouTubeiOSPlayerHelper */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -62,6 +63,7 @@
 				07216D032D1D3D630008004D /* RxCocoa in Frameworks */,
 				07216D0D2D1D3D630008004D /* RxSwift in Frameworks */,
 				07216CFE2D1D3D630008004D /* RxBlocking in Frameworks */,
+				07216D522D1D4B200008004D /* YouTubeiOSPlayerHelper in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +120,7 @@
 				07216D022D1D3D630008004D /* RxCocoa */,
 				07216D072D1D3D630008004D /* RxRelay */,
 				07216D0C2D1D3D630008004D /* RxSwift */,
+				07216D512D1D4B200008004D /* YouTubeiOSPlayerHelper */,
 			);
 			productName = SpartaNetflixClone;
 			productReference = 07216C482D1CF17B0008004D /* SpartaNetflixClone.app */;
@@ -150,6 +153,7 @@
 			packageReferences = (
 				07216C8A2D1D13BC0008004D /* XCRemoteSwiftPackageReference "SnapKit" */,
 				07216CFB2D1D3D400008004D /* XCRemoteSwiftPackageReference "RxSwift" */,
+				07216D502D1D4B200008004D /* XCRemoteSwiftPackageReference "youtube-ios-player-helper" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 07216C492D1CF17B0008004D /* Products */;
@@ -407,6 +411,14 @@
 				minimumVersion = 6.8.0;
 			};
 		};
+		07216D502D1D4B200008004D /* XCRemoteSwiftPackageReference "youtube-ios-player-helper" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/youtube/youtube-ios-player-helper";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.4;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -434,6 +446,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 07216CFB2D1D3D400008004D /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
+		};
+		07216D512D1D4B200008004D /* YouTubeiOSPlayerHelper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 07216D502D1D4B200008004D /* XCRemoteSwiftPackageReference "youtube-ios-player-helper" */;
+			productName = YouTubeiOSPlayerHelper;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
