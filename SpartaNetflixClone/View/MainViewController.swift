@@ -7,13 +7,17 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 class MainViewController: UIViewController {
+    
+    private let disposeBag = DisposeBag()
+    private let viewModel = MainViewModel()
     
     // RxCocoa 나 RxRelay 를 사용하면 이 변수조차 필요없지만, 이 강의에서는 변수를 두고 활용합시다.
     private var popularMovies = [Movie]()
     private var topRatedMovies = [Movie]()
-    private var popularTvShows = [Movie]()
+    private var upcomingMovies = [Movie]()
     
     private let label: UILabel = {
         let label = UILabel()
@@ -35,7 +39,39 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        bind()
         configureUI()
+    }
+    
+    // View - ViewModel 데이터 바인딩 with RxSwift.
+    private func bind() {
+        viewModel.popularMovieSubject
+        // UI 작업 -> 메인쓰레드에서 동작해라
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] movies in
+                self?.popularMovies = movies
+                self?.collectionView.reloadData()
+            }, onError: { error in
+                print("에러 발생: \(error)")
+            }).disposed(by: disposeBag)
+        
+        viewModel.topRatedMovieSubject
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] movies in
+                self?.topRatedMovies = movies
+                self?.collectionView.reloadData()
+            }, onError: { error in
+                print("에러 발생: \(error)")
+            }).disposed(by: disposeBag)
+        
+        viewModel.upcomingMovieSubject
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] movies in
+                self?.upcomingMovies = movies
+                self?.collectionView.reloadData()
+            }, onError: { error in
+                print("에러 발생: \(error)")
+            }).disposed(by: disposeBag)
     }
     
     private func configureUI() {
@@ -59,47 +95,48 @@ class MainViewController: UIViewController {
     }
     
     private func createLayout() -> UICollectionViewLayout {
-           // 각 아이템은 각 그룹 내에서 전체 너비와 높이를 차지. (1.0 = 100%).
-           let itemSize = NSCollectionLayoutSize(
-               widthDimension: .fractionalWidth(1.0),
-               heightDimension: .fractionalHeight(1.0)
-           )
-           let item = NSCollectionLayoutItem(layoutSize: itemSize)
-           
-           // 각 그룹은 화면 너비의 25%를 차지하고, 높이는 너비의 40%.
-           let groupSize = NSCollectionLayoutSize(
-               widthDimension: .fractionalWidth(0.25),
-               heightDimension: .fractionalWidth(0.4)
-           )
-           let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-           
-           /*
-            섹션은 연속적인 수평 스크롤이 가능.
-            그룹 간 간격은 10포인트.
-            섹션의 모든 면에 10포인트의 여백 존재. bottom 은 20.
-            */
-           let section = NSCollectionLayoutSection(group: group)
-           section.orthogonalScrollingBehavior = .continuous
-           section.interGroupSpacing = 10
-           section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
-           
-           /*
-            헤더는 섹션의 전체 너비를 차지하고, 높이는 예상값 44포인트.
-            헤더는 섹션의 상단에 배치됩니다.
-            */
-           let headerSize = NSCollectionLayoutSize(
-               widthDimension: .fractionalWidth(1.0),
-               heightDimension: .estimated(44)
-           )
-           let header = NSCollectionLayoutBoundarySupplementaryItem(
-               layoutSize: headerSize,
-               elementKind: UICollectionView.elementKindSectionHeader,
-               alignment: .top
-           )
-           section.boundarySupplementaryItems = [header]
-           
-           return UICollectionViewCompositionalLayout(section: section)
-       }
+        
+        // 각 아이템은 각 그룹 내에서 전체 너비와 높이를 차지. (1.0 = 100%).
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        // 각 그룹은 화면 너비의 25%를 차지하고, 높이는 너비의 40%.
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.25),
+            heightDimension: .fractionalWidth(0.4)
+        )
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        
+        /*
+         섹션은 연속적인 수평 스크롤이 가능.
+         그룹 간 간격은 10포인트.
+         섹션의 모든 면에 10포인트의 여백 존재. bottom 은 20.
+         */
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .continuous
+        section.interGroupSpacing = 10
+        section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
+        
+        /*
+         헤더는 섹션의 전체 너비를 차지하고, 높이는 예상값 44포인트.
+         헤더는 섹션의 상단에 배치됩니다.
+         */
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(44)
+        )
+        let header = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
+        section.boundarySupplementaryItems = [header]
+        
+        return UICollectionViewCompositionalLayout(section: section)
+    }
     
 }
 
@@ -107,13 +144,13 @@ class MainViewController: UIViewController {
 enum Section: Int, CaseIterable {
     case popularMovies
     case topRatedMovies
-    case popularTVShows
+    case upcomingMovies
     
     var title: String {
         switch self {
         case .popularMovies: return "이 시간 핫한 영화"
         case .topRatedMovies: return "가장 평점이 높은 영화"
-        case .popularTVShows: return "곧 개봉되는 영화"
+        case .upcomingMovies: return "곧 개봉되는 영화"
         }
     }
 }
@@ -136,8 +173,8 @@ extension MainViewController: UICollectionViewDataSource {
             cell.configure(with: popularMovies[indexPath.row])
         case .topRatedMovies:
             cell.configure(with: topRatedMovies[indexPath.row])
-        case .popularTVShows:
-            cell.configure(with: popularTvShows[indexPath.row])
+        case .upcomingMovies:
+            cell.configure(with: upcomingMovies[indexPath.row])
         case .none:
             break
         }
@@ -170,9 +207,14 @@ extension MainViewController: UICollectionViewDataSource {
         switch Section(rawValue: section) {
         case .popularMovies: return popularMovies.count
         case .topRatedMovies: return topRatedMovies.count
-        case .popularTVShows: return popularTvShows.count
+        case .upcomingMovies: return upcomingMovies.count
         case .none: return 5
         }
+    }
+    
+    // collectionView 의 섹션이 몇개인지 설정하는 메서드.
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return Section.allCases.count
     }
     
 }
